@@ -30,3 +30,12 @@
 *.exe
 *.out
 *.app
+
+# Xcode
+*.plist
+*.xcconfig
+*.xcodeproj
+*.make
+Makefile
+*.xcuserdatad
+
