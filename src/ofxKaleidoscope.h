@@ -138,6 +138,21 @@ public:
         
     }
     
+    void setOffset( float f ) {
+        offset.set(f);        
+    }
+    
+    int setSegments( int n, bool force_even = true ) {
+        
+        if(force_even) {
+            if(n % 2 != 0) {
+                n++;
+            }
+        }
+        segments.set(n);
+        return segments.get();
+    }
+    
 };
 
 #endif /* ofxKaleidoscope_h */
