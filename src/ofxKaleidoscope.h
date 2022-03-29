@@ -56,7 +56,21 @@ public:
         //canvasImg.updateTexture();
     }
     
-    void draw( int height ) {
+    void draw( int height = 0 ) {
+        draw( ofGetWidth()/2.0, ofGetHeight()/2.0, canvasImg.getTexture(), height );
+    }
+    
+    void draw( const ofTexture & tex, int height = 0 ) {
+         draw( ofGetWidth()/2.0, ofGetHeight()/2.0, tex, height );
+    }
+    
+    void draw( float cx, float cy, int height = 0 ) {
+        draw( cx, cy, canvasImg.getTexture(), height );
+    }
+        
+    void draw( float cx, float cy, const ofTexture & tex, int height = 0 ) {
+        
+        if(!tex.isAllocated()) return;
         
         ofPushStyle();
 
@@ -66,7 +80,9 @@ public:
             ofEnableNormalizedTexCoords();
         }
         
-        canvasImg.getTexture().bind();
+        height = (height < 1) ? tex.getHeight() : height;
+        
+        tex.bind();
         
         float angle = 360.f/segments; //8 sides to start
          
@@ -98,7 +114,7 @@ public:
         */
          
         // Normalized distance from the centre (half the width of the above 'V')
-        float dist = abs( (float)canvasImg.getHeight() * tan(ofDegToRad(angle)*0.5) ) / (float)canvasImg.getHeight();
+        float dist = abs( (float)tex.getHeight() * tan(ofDegToRad(angle)*0.5) ) / (float)tex.getHeight();
              
         // realOffset is where the (normalized) middle of the 'V' is on the x-axis
         float realOffset = ofMap( offset, 0, 1, dist, 1-dist );
@@ -114,11 +130,12 @@ public:
         }
 
         ofPushMatrix();
-        ofTranslate(ofGetWidth()/2, ofGetHeight()/2, 0);
+        ofTranslate(cx, cy, 0);
         
         mesh.setMode(OF_PRIMITIVE_TRIANGLE_FAN);        
         mesh.draw();
         
+        tex.unbind();
         
         if(debug) {
             ofSetColor(ofColor::red, 128);
@@ -127,7 +144,6 @@ public:
             mesh.drawVertices();
         }
         
-        canvasImg.getTexture().unbind();
         ofPopMatrix();
         
         if(!usingNormTexCoords) {
