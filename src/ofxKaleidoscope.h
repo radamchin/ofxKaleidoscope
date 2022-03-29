@@ -22,6 +22,8 @@ public:
     ofParameter<int> segments;
     ofParameter<float> offset;
     
+    ofParameter<bool> debug;
+    
     ofImage canvasImg;
     
     //--------------------------------------------------
@@ -29,6 +31,8 @@ public:
         
         segments.set("Segments", 8, 3, MAX_KS_UI_SEGMENTS);
         offset.set("Offset", .5, 0.0, 2.0);
+        
+        debug.set("Debug", false);
         
     }
     
@@ -53,7 +57,7 @@ public:
     }
     
     void draw( int height ) {
-            
+        
         ofPushStyle();
 
         bool usingNormTexCoords = ofGetUsingNormalizedTexCoords();
@@ -61,7 +65,7 @@ public:
         if(!usingNormTexCoords) {
             ofEnableNormalizedTexCoords();
         }
-         
+        
         canvasImg.getTexture().bind();
         
         float angle = 360.f/segments; //8 sides to start
@@ -97,13 +101,13 @@ public:
         float dist = abs( (float)canvasImg.getHeight() * tan(ofDegToRad(angle)*0.5) ) / (float)canvasImg.getHeight();
              
         // realOffset is where the (normalized) middle of the 'V' is on the x-axis
-        float realOffset = ofMap(offset, 0, 1, dist, 1-dist);
+        float realOffset = ofMap( offset, 0, 1, dist, 1-dist );
          
         // This is the point at the bottom of the triangle - our centre for the triangle fan
-        mesh.addTexCoord(ofVec2f(realOffset, 1));
+        mesh.addTexCoord( ofVec2f(realOffset, 1) );
      
-        ofVec2f ta(realOffset-dist, 0);
-        ofVec2f tb(realOffset+dist, 0);
+        ofVec2f ta( realOffset-dist, 0 );
+        ofVec2f tb( realOffset+dist, 0 );
 
         for(int i = 0; i <= segments; i++) {
             mesh.addTexCoord( i%2==0 ? ta : tb);
@@ -114,16 +118,18 @@ public:
         
         mesh.setMode(OF_PRIMITIVE_TRIANGLE_FAN);        
         mesh.draw();
-
-        // Debug
-        //mesh.drawWireframe();
-        //ofSetColor(ofColor::red);
-        //mesh.drawVertices();
-
-        ofPopMatrix();
-
+        
+        
+        if(debug) {
+            ofSetColor(ofColor::red, 128);
+            mesh.drawWireframe();
+            ofSetColor(ofColor::green);
+            mesh.drawVertices();
+        }
+        
         canvasImg.getTexture().unbind();
-
+        ofPopMatrix();
+        
         if(!usingNormTexCoords) {
             ofDisableNormalizedTexCoords();
         }
