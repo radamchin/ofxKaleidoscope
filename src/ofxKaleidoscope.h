@@ -31,7 +31,7 @@ public:
     //--------------------------------------------------
     ofxKaleidoscope() {
         
-        segments.set("Segments", 8, 3, MAX_KS_UI_SEGMENTS);
+        segments.set("Segments", 16, 3, MAX_KS_UI_SEGMENTS);
         offset.set("Offset", .5, 0.0, 2.0);
         
         debug.set("Debug", false);
@@ -40,19 +40,19 @@ public:
     }
     
     void setup( int w, int h ) {
-        
         size(w, h);
-        
     }
     
     void size( int w, int h  ) {
-        
         canvasImg.allocate(w, h, OF_IMAGE_COLOR);
         // canvasImg.setUseTexture(true);
-        
     }
     
     void update( const ofPixels & pixels ) {
+        
+        if(!canvasImg.isAllocated()) {
+            size( pixels.getWidth(), pixels.getHeight() );
+        }
         
         canvasImg.setFromPixels(pixels);
         //canvasImg.setFromPixels(pixels.getData(), canvasImg.getWidth(), canvasImg.getHeight());
