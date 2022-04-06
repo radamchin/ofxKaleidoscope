@@ -26,6 +26,8 @@ public:
     
     ofImage canvasImg;
     
+    bool forceEvenSegments = false;
+    
     //--------------------------------------------------
     ofxKaleidoscope() {
         
@@ -34,6 +36,7 @@ public:
         
         debug.set("Debug", false);
         
+        segments.addListener(this, &ofxKaleidoscope::segmentsChanged);
     }
     
     void setup( int w, int h ) {
@@ -156,6 +159,16 @@ public:
     
     void setOffset( float f ) {
         offset.set(f);        
+    }
+    
+    void segmentsChanged( int & val ) {
+        
+        if(forceEvenSegments) {
+            if(val % 2 != 0) {
+                segments.set(val+1);
+            }
+        }
+        
     }
     
     int setSegments( int n, bool force_even = true ) {
