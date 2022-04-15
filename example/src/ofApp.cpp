@@ -22,7 +22,7 @@ void ofApp::setup(){
     gui.add( kScope.offset ) ;
     gui.add( kheight.set("Height", ofGetHeight(), 8, ofGetHeight() * 4) );
     
-    gui.setPosition( ofGetWidth()-235, 5 );
+    gui.setPosition( ofGetWidth() - gui.getWidth() - 10, 5 );
     
 }
 
@@ -32,15 +32,14 @@ void ofApp::update( ){
     vidPlayer.update();
     
     if(vidPlayer.isFrameNew()){
-       kScope.update( vidPlayer.getPixels() );
+       // kScope.updatePixels( vidPlayer.getPixels() );
     }
 }
-
 
 //--------------------------------------------------------------
 void ofApp::draw(){
         
-    kScope.draw( kheight.get() );
+    kScope.draw( vidPlayer.getTexture(), kheight.get() );
     
     if(showUi) gui.draw();
     

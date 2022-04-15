@@ -35,20 +35,23 @@ public:
         offset.set("Offset", .5, 0.0, 2.0);
         
         debug.set("Debug", false);
-        
+            
         segments.addListener(this, &ofxKaleidoscope::segmentsChanged);
     }
     
+    //--------------------------------------------------
     void setup( int w, int h ) {
         size(w, h);
     }
     
+    //--------------------------------------------------
     void size( int w, int h  ) {
         canvasImg.allocate(w, h, OF_IMAGE_COLOR);
         // canvasImg.setUseTexture(true);
     }
     
-    void update( const ofPixels & pixels ) {
+    //--------------------------------------------------
+    void updatePixels( const ofPixels & pixels ) {
         
         if(!canvasImg.isAllocated()) {
             size( pixels.getWidth(), pixels.getHeight() );
@@ -59,23 +62,24 @@ public:
         //canvasImg.updateTexture();
     }
     
-    void draw( int height = 0 ) {
-        draw( ofGetWidth()/2.0, ofGetHeight()/2.0, canvasImg.getTexture(), height );
+    //--------------------------------------------------
+    void draw( int height = 0, float rotation = 0 ) {
+        draw( ofGetWidth()/2.0, ofGetHeight()/2.0, canvasImg.getTexture(), height, rotation );
     }
     
-    void draw( const ofTexture & tex, int height = 0 ) {
-         draw( ofGetWidth()/2.0, ofGetHeight()/2.0, tex, height );
+    void draw( const ofTexture & tex, int height = 0, float rotation = 0 ) {
+         draw( ofGetWidth()/2.0, ofGetHeight()/2.0, tex, height, rotation );
     }
     
-    void draw( float cx, float cy, int height = 0 ) {
-        draw( cx, cy, canvasImg.getTexture(), height );
+    void draw( float cx, float cy, int height = 0, float rotation = 0 ) {
+        draw( cx, cy, canvasImg.getTexture(), height, rotation );
     }
         
-    void draw( float cx, float cy, const ofTexture & tex, int height = 0 ) {
+    void draw( float cx, float cy, const ofTexture & tex, int height = 0, float rotation = 0 ) {
         
         if(!tex.isAllocated()) return;
         
-        ofPushStyle();
+        //ofPushStyle();
 
         bool usingNormTexCoords = ofGetUsingNormalizedTexCoords();
                      
@@ -134,6 +138,7 @@ public:
 
         ofPushMatrix();
         ofTranslate(cx, cy, 0);
+        if(rotation != 0) ofRotateRad(rotation);
         
         mesh.setMode(OF_PRIMITIVE_TRIANGLE_FAN);        
         mesh.draw();
@@ -141,10 +146,12 @@ public:
         tex.unbind();
         
         if(debug) {
-            ofSetColor(ofColor::red, 128);
-            mesh.drawWireframe();
-            ofSetColor(ofColor::green);
-            mesh.drawVertices();
+            ofPushStyle();
+                ofSetColor(ofColor::red, 128);
+                mesh.drawWireframe();
+                ofSetColor(ofColor::green);
+                mesh.drawVertices();
+            ofPopStyle();
         }
         
         ofPopMatrix();
@@ -153,14 +160,16 @@ public:
             ofDisableNormalizedTexCoords();
         }
 
-        ofPopStyle();
+        //ofPopStyle();
         
     }
     
+    //--------------------------------------------------
     void setOffset( float f ) {
         offset.set(f);        
     }
     
+    //--------------------------------------------------
     void segmentsChanged( int & val ) {
         
         if(forceEvenSegments) {
@@ -171,6 +180,7 @@ public:
         
     }
     
+    //--------------------------------------------------
     int setSegments( int n, bool force_even = true ) {
         
         if(force_even) {
@@ -181,6 +191,8 @@ public:
         segments.set(n);
         return segments.get();
     }
+    
+    //--------------------------------------------------
     
 };
 
