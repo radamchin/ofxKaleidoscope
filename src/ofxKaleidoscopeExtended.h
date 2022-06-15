@@ -6,6 +6,8 @@
 //
 //  Wrapper of Base ofxKaleidoscope, but adds animation things.
 //
+//  Note: This has dependecy on this repo / file: https://github.com/radamchin/ofxBBCUtils/blob/dev/src/animation/Oscillator.h
+//
 
 #ifndef ofxKaleidoscopeExtended_h
 #define ofxKaleidoscopeExtended_h
@@ -40,7 +42,7 @@ class ofxKaleidoscopeExtended: public ofxKaleidoscope {
     //--------------------------------------------------------------
     void setup( int w, int h ) {
         
-        ofxKaleidoscope::setup( w, h );
+       //  ofxKaleidoscope::setup( w, h );
         
         oscillateSegments.setup("Segments");
         oscillateSegments.setSpeed(0.02);
@@ -54,6 +56,14 @@ class ofxKaleidoscopeExtended: public ofxKaleidoscope {
 
         oscillateHeight.setup("Height", 0.01, 0.001, 0.05);
 
+        updateDimensions(w, h);
+        
+    }
+    
+    void updateDimensions( int w, int h ) {
+        
+        ofxKaleidoscope::size( w, h );
+        
         float ww = w; //ofGetWidth();
         float wh = h; // ofGetHeight();
         // float ratio = ww / hh;
@@ -62,9 +72,8 @@ class ofxKaleidoscopeExtended: public ofxKaleidoscope {
         oscillateHeight.setOutputRange( ofGetHeight() * .4, fill_diameter );
         
         height.set("Height", h, 8, fill_diameter);
-
     }
-
+    
     //--------------------------------------------------------------
     void update() {
         
