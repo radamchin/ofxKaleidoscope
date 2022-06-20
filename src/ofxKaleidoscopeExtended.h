@@ -48,7 +48,7 @@ class ofxKaleidoscopeExtended: public ofxKaleidoscope {
         oscillateSegments.setSpeed(0.02);
         oscillateSegments.setSpeedRange(0.001, 0.05);
         oscillateSegments.setOutputRange(8, 64);
-
+        
         oscillateOffset.setup("Offset", 0.01, 0.001, 0.05);
 
         oscillateRotation.setup("Rotation", 0.01, 0.001, 0.05);
@@ -56,10 +56,38 @@ class ofxKaleidoscopeExtended: public ofxKaleidoscope {
 
         oscillateHeight.setup("Height", 0.01, 0.001, 0.05);
 
+        
+        oscillateSegments.enabled.addListener(this, &ofxKaleidoscopeExtended::segmentOscillateEnabled);
+        oscillateOffset.enabled.addListener(this, &ofxKaleidoscopeExtended::offsetOscillateEnabled);
+        oscillateRotation.enabled.addListener(this, &ofxKaleidoscopeExtended::rotationOscillateEnabled);
+        oscillateHeight.enabled.addListener(this, &ofxKaleidoscopeExtended::heightOscillateEnabled);
+        
         updateDimensions(w, h);
         
     }
     
+    // Map the oscillator step values to start where the current item value is at.
+    //--------------------------------------------------------------
+    void segmentOscillateEnabled( bool & b) {
+        if(b) oscillateSegments.mapStepTo( segments.get() );
+    }
+    
+    //--------------------------------------------------------------
+    void offsetOscillateEnabled( bool & b) {
+        if(b) oscillateOffset.mapStepTo( offset.get() );
+    }
+    
+    //--------------------------------------------------------------
+    void rotationOscillateEnabled( bool & b) {
+        if(b) oscillateRotation.mapStepTo( rotation.get() );
+    }
+    
+    //--------------------------------------------------------------
+    void heightOscillateEnabled( bool & b) {
+        if(b) oscillateHeight.mapStepTo( height.get() );
+    }
+    
+    //--------------------------------------------------------------
     void updateDimensions( int w, int h ) {
         
         ofxKaleidoscope::size( w, h );
@@ -99,10 +127,7 @@ class ofxKaleidoscopeExtended: public ofxKaleidoscope {
     void draw(int x = 0, int y = 0, float global_alpha = 1.0, ofBlendMode blendMode = OF_BLENDMODE_ALPHA) {
 
         ofPushMatrix();
-        
-        // ofTranslate(cx,cy);
-        // ofRotateRad(rotation, 0, 0, 1);
-        // ofEnableAlphaBlending();
+        ofPushStyle();
         
         ofEnableBlendMode( blendMode );
         
@@ -112,6 +137,7 @@ class ofxKaleidoscopeExtended: public ofxKaleidoscope {
             ofxKaleidoscope::draw( x, y, height.get(), rotation.get() );
         }
         
+        ofPopStyle();
         ofPopMatrix();
     }
 
