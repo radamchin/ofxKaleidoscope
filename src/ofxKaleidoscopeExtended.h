@@ -21,14 +21,16 @@ class ofxKaleidoscopeExtended: public ofxKaleidoscope {
     public:
 
     // Animation parameters
-    bbc::utils::Oscillator oscillateSegments;
-    bbc::utils::Oscillator oscillateOffset;
-    bbc::utils::Oscillator oscillateRotation;
-    bbc::utils::Oscillator oscillateHeight;
+    bbc::utils::Oscillator oscillate_segments;
+    bbc::utils::Oscillator oscillate_offset;
+    bbc::utils::Oscillator oscillate_rotation;
+    bbc::utils::Oscillator oscillate_height;
 
     ofParameter<int> height;
     ofParameter<float> alpha{"Alpha", 1.0, 0.0, 1.0};
     ofParameter<float> rotation{"Rotation", 0, 0, TWO_PI};
+	
+	ofParameterGroup oscillator_params;
 
     //--------------------------------------------------------------
     ofxKaleidoscopeExtended() {
@@ -44,24 +46,31 @@ class ofxKaleidoscopeExtended: public ofxKaleidoscope {
         
        //  ofxKaleidoscope::setup( w, h );
         
-        oscillateSegments.setup("Segments");
-        oscillateSegments.setSpeed(0.02);
-        oscillateSegments.setSpeedRange(0.001, 0.05);
-        oscillateSegments.setOutputRange(8, 64);
+        oscillate_segments.setup("Segments");
+        oscillate_segments.setSpeed(0.02);
+        oscillate_segments.setSpeedRange(0.001, 0.05);
+        oscillate_segments.setOutputRange(8, 64);
         
-        oscillateOffset.setup("Offset", 0.01, 0.001, 0.05);
+        oscillate_offset.setup("Offset", 0.01, 0.001, 0.05);
 
-        oscillateRotation.setup("Rotation", 0.01, 0.001, 0.05);
-        oscillateRotation.setOutputRange(0, TWO_PI);
+        oscillate_rotation.setup("Rotation", 0.01, 0.001, 0.05);
+        oscillate_rotation.setOutputRange(0, TWO_PI);
 
-        oscillateHeight.setup("Height", 0.01, 0.001, 0.05);
+        oscillate_height.setup("Height", 0.01, 0.001, 0.05);
 
         
-        oscillateSegments.enabled.addListener(this, &ofxKaleidoscopeExtended::segmentOscillateEnabled);
-        oscillateOffset.enabled.addListener(this, &ofxKaleidoscopeExtended::offsetOscillateEnabled);
-        oscillateRotation.enabled.addListener(this, &ofxKaleidoscopeExtended::rotationOscillateEnabled);
-        oscillateHeight.enabled.addListener(this, &ofxKaleidoscopeExtended::heightOscillateEnabled);
+        oscillate_segments.enabled.addListener(this, &ofxKaleidoscopeExtended::segmentOscillateEnabled);
+        oscillate_offset.enabled.addListener(this, &ofxKaleidoscopeExtended::offsetOscillateEnabled);
+        oscillate_rotation.enabled.addListener(this, &ofxKaleidoscopeExtended::rotationOscillateEnabled);
+        oscillate_height.enabled.addListener(this, &ofxKaleidoscopeExtended::heightOscillateEnabled);
         
+		oscillator_params.setName("Oscillators");
+		oscillator_params.add(oscillate_segments.params);
+		oscillator_params.add(oscillate_offset.params);
+		oscillator_params.add(oscillate_rotation.params);
+		oscillator_params.add(oscillate_height.params);
+		
+		
         updateDimensions(w, h);
         
     }
@@ -69,22 +78,22 @@ class ofxKaleidoscopeExtended: public ofxKaleidoscope {
     // Map the oscillator step values to start where the current item value is at.
     //--------------------------------------------------------------
     void segmentOscillateEnabled( bool & b) {
-        if(b) oscillateSegments.mapStepTo( segments.get() );
+        if(b) oscillate_segments.mapStepTo( segments.get() );
     }
     
     //--------------------------------------------------------------
     void offsetOscillateEnabled( bool & b) {
-        if(b) oscillateOffset.mapStepTo( offset.get() );
+        if(b) oscillate_offset.mapStepTo( offset.get() );
     }
     
     //--------------------------------------------------------------
     void rotationOscillateEnabled( bool & b) {
-        if(b) oscillateRotation.mapStepTo( rotation.get() );
+        if(b) oscillate_rotation.mapStepTo( rotation.get() );
     }
     
     //--------------------------------------------------------------
     void heightOscillateEnabled( bool & b) {
-        if(b) oscillateHeight.mapStepTo( height.get() );
+        if(b) oscillate_height.mapStepTo( height.get() );
     }
     
     //--------------------------------------------------------------
@@ -97,7 +106,7 @@ class ofxKaleidoscopeExtended: public ofxKaleidoscope {
         // float ratio = ww / hh;
         float fill_diameter = sqrt( ww * ww  +  wh * wh ); // Scale to fill full frame.
 
-        oscillateHeight.setOutputRange( ofGetHeight() * .4, fill_diameter );
+        oscillate_height.setOutputRange( ofGetHeight() * .4, fill_diameter );
         
         height.set("Height", h, 8, fill_diameter);
     }
@@ -105,20 +114,20 @@ class ofxKaleidoscopeExtended: public ofxKaleidoscope {
     //--------------------------------------------------------------
     void update() {
         
-        if(oscillateSegments.enabled) {
-            this->setSegments( (int)oscillateSegments.update() );
+        if(oscillate_segments.enabled) {
+            this->setSegments( (int)oscillate_segments.update() );
         }
 
-        if(oscillateOffset.enabled) {
-            this->setOffset( oscillateOffset.update() );
+        if(oscillate_offset.enabled) {
+            this->setOffset( oscillate_offset.update() );
         }
 
-        if(oscillateRotation.enabled) {
-            rotation.set( oscillateRotation.update() );
+        if(oscillate_rotation.enabled) {
+            rotation.set( oscillate_rotation.update() );
         }
 
-        if(oscillateHeight.enabled) {
-            height.set( oscillateHeight.update() );
+        if(oscillate_height.enabled) {
+            height.set( oscillate_height.update() );
         }
 
     }
