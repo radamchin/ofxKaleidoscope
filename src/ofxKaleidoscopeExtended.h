@@ -37,6 +37,7 @@ class ofxKaleidoscopeExtended: public ofxKaleidoscope {
         
     }
     
+	//--------------------------------------------------------------
     ~ofxKaleidoscopeExtended() {
         
     }
@@ -58,7 +59,6 @@ class ofxKaleidoscopeExtended: public ofxKaleidoscope {
 
         oscillate_height.setup("Height", 0.01, 0.001, 0.05);
 
-        
         oscillate_segments.enabled.addListener(this, &ofxKaleidoscopeExtended::segmentOscillateEnabled);
         oscillate_offset.enabled.addListener(this, &ofxKaleidoscopeExtended::offsetOscillateEnabled);
         oscillate_rotation.enabled.addListener(this, &ofxKaleidoscopeExtended::rotationOscillateEnabled);
@@ -69,7 +69,6 @@ class ofxKaleidoscopeExtended: public ofxKaleidoscope {
 		oscillator_params.add(oscillate_offset.params);
 		oscillator_params.add(oscillate_rotation.params);
 		oscillator_params.add(oscillate_height.params);
-		
 		
         updateDimensions(w, h);
         
